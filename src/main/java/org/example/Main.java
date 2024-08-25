@@ -1,17 +1,62 @@
 package org.example;
 
+import org.example.stream.Kafka;
+
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+        NFA nfa = new NFA();
+        State startState = new State(nfa.states.size(), true, false, 2);
+        nfa.states.add(startState);
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
+        Predicate beforeX = new Predicate(0, 2, (prevEvent, currEvent) -> {
+            return currEvent.get(0).boundingBox.topological_relation(currEvent.get(1).boundingBox) / 13 < 1;
+        });
+
+        Predicate beforeY = new Predicate(1, 2, (prevEvent, currEvent) -> {
+            return currEvent.get(0).boundingBox.topological_relation(currEvent.get(1).boundingBox) % 13 < 1;
+        });
+
+        Predicate intersectX = new Predicate(2, 2, (prevEvent, currEvent) -> {
+            return currEvent.get(0).boundingBox.topological_relation(currEvent.get(1).boundingBox) / 13 >= 1 &&
+                    currEvent.get(0).boundingBox.topological_relation(currEvent.get(1).boundingBox) / 13 < 12;
+        });
+
+        Predicate intersectY = new Predicate(3, 2, (prevEvent, currEvent) -> {
+            return currEvent.get(0).boundingBox.topological_relation(currEvent.get(1).boundingBox) % 13 >= 1 &&
+                    currEvent.get(0).boundingBox.topological_relation(currEvent.get(1).boundingBox) % 13 < 12;
+        });
+
+        Predicate afterX = new Predicate(4, 2, (prevEvent, currEvent) -> {
+            return currEvent.get(0).boundingBox.topological_relation(currEvent.get(1).boundingBox) / 13 == 12;
+        });
+
+        Predicate afterY = new Predicate(5, 2, (prevEvent, currEvent) -> {
+            return currEvent.get(0).boundingBox.topological_relation(currEvent.get(1).boundingBox) % 13 == 12;
+        });
+
+        for (int i = 0; i < 6; i++){
+            State state = new State(nfa.states.size(), false, false, 2);
+            nfa.states.add(state);
+        }
+        nfa.states.get(5).isAcceptingState = true;
+        nfa.states.get(6).isAcceptingState = true;
+        nfa.predicates.add(beforeX);
+        nfa.predicates.add(beforeY);
+        nfa.predicates.add(intersectX);
+        nfa.predicates.add(intersectY);
+        nfa.predicates.add(afterX);
+        nfa.predicates.add(afterY);
+
+
+
+
+        Kafka kf = new Kafka(nfa);
+        try {
+            kf.readStream();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
