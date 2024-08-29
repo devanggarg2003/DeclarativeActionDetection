@@ -1,5 +1,10 @@
 package org.example;
-import java.util.*;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Vector;
+import java.util.Set;
+import java.util.HashSet;
 
 
 public class NFA {
@@ -40,10 +45,10 @@ public class NFA {
                 }
                 Vector<Pair<Integer, Integer>> possibleTransitions = statePredicates.get(i);
                 for (int j = 0; j < possibleTransitions.size(); j++){
-                    boolean isTransit = predicates.get(possibleTransitions.get(j).first).forward(prevEvent, currEvent);
+                    boolean isTransit = predicates.get(possibleTransitions.get(j).first()).forward(prevEvent, currEvent);
                     if (isTransit){
                         // add the new event in the set for the new state fetched from the map
-                        Integer nextState = possibleTransitions.get(j).second;
+                        Integer nextState = possibleTransitions.get(j).second();
                         nextEvents.get(nextState).add(currEvent);
                     }
                 }
@@ -55,7 +60,7 @@ public class NFA {
             for(Vector<Entity> event: nextEvents.get(i)) {
                 states.get(i).satisfyingEvents.add(event);
                 if (states.get(i).isAcceptingState){
-                    System.out.println(event.firstElement() + " <--> " +  event.lastElement());
+                    System.out.println(event.firstElement().entity_class + " <--> " +  event.lastElement().entity_class);
                 }
             }
 

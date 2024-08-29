@@ -79,6 +79,9 @@ public class Main {
         nfa.statePredicates.get(4).add(pair4);
         nfa.statePredicates.get(4).add(pair6);
 
+        nfa.statePredicates.put(5, new Vector<>());
+        nfa.statePredicates.put(6, new Vector<>());
+
 
         Kafka kf = new Kafka(nfa);
         try {
