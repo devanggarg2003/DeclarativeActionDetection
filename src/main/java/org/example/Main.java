@@ -2,6 +2,8 @@ package org.example;
 
 import org.example.stream.Kafka;
 
+import java.util.Vector;
+
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
@@ -49,7 +51,33 @@ public class Main {
         nfa.predicates.add(afterX);
         nfa.predicates.add(afterY);
 
+        nfa.statePredicates.put(0, new Vector<>());
+        Pair<Integer, Integer> pair1 = new Pair<>(0, 1);
+        Pair<Integer, Integer> pair2 = new Pair<>(1, 2);
+        nfa.statePredicates.get(0).add(pair1);
+        nfa.statePredicates.get(0).add(pair2);
 
+        nfa.statePredicates.put(1, new Vector<>());
+        Pair<Integer, Integer> pair3 = new Pair<>(2, 3);
+        nfa.statePredicates.get(1).add(pair1);
+        nfa.statePredicates.get(1).add(pair3);
+
+        nfa.statePredicates.put(2, new Vector<>());
+        Pair<Integer, Integer> pair4 = new Pair<>(3, 4);
+        nfa.statePredicates.get(2).add(pair2);
+        nfa.statePredicates.get(2).add(pair4);
+
+        nfa.statePredicates.put(3, new Vector<>());
+        Pair<Integer, Integer> pair5 = new Pair<>(4, 5);
+        nfa.statePredicates.get(3).add(pair1);
+        nfa.statePredicates.get(3).add(pair3);
+        nfa.statePredicates.get(3).add(pair5);
+
+        nfa.statePredicates.put(4, new Vector<>());
+        Pair<Integer, Integer> pair6 = new Pair<>(5, 6);
+        nfa.statePredicates.get(4).add(pair2);
+        nfa.statePredicates.get(4).add(pair4);
+        nfa.statePredicates.get(4).add(pair6);
 
 
         Kafka kf = new Kafka(nfa);

@@ -40,10 +40,10 @@ public class NFA {
                 }
                 Vector<Pair<Integer, Integer>> possibleTransitions = statePredicates.get(i);
                 for (int j = 0; j < possibleTransitions.size(); j++){
-                    boolean isTransit = predicates.get(possibleTransitions.get(j).first()).forward(prevEvent, currEvent);
+                    boolean isTransit = predicates.get(possibleTransitions.get(j).first).forward(prevEvent, currEvent);
                     if (isTransit){
                         // add the new event in the set for the new state fetched from the map
-                        Integer nextState = possibleTransitions.get(j).second();
+                        Integer nextState = possibleTransitions.get(j).second;
                         nextEvents.get(nextState).add(currEvent);
                     }
                 }
@@ -54,7 +54,11 @@ public class NFA {
             // add the new events from the set for the corresponding state
             for(Vector<Entity> event: nextEvents.get(i)) {
                 states.get(i).satisfyingEvents.add(event);
+                if (states.get(i).isAcceptingState){
+                    System.out.println(event.firstElement() + " <--> " +  event.lastElement());
+                }
             }
+
         }
     }
 }
