@@ -13,28 +13,46 @@ public class Main {
         nfa.states.add(startState);
 
         Predicate beforeX = new Predicate(0, 2, (prevEvent, currEvent) -> {
+            if(currEvent.get(0).entity_class != 2 || currEvent.get(1).entity_class != 2) {
+                return false;
+            }
             return currEvent.get(0).boundingBox.topological_relation(currEvent.get(1).boundingBox) / 13 < 1;
         });
 
         Predicate beforeY = new Predicate(1, 2, (prevEvent, currEvent) -> {
+            if(currEvent.get(0).entity_class != 2 || currEvent.get(1).entity_class != 2) {
+                return false;
+            }
             return currEvent.get(0).boundingBox.topological_relation(currEvent.get(1).boundingBox) % 13 < 1;
         });
 
         Predicate intersectX = new Predicate(2, 2, (prevEvent, currEvent) -> {
+            if(currEvent.get(0).entity_class != 2 || currEvent.get(1).entity_class != 2) {
+                return false;
+            }
             return currEvent.get(0).boundingBox.topological_relation(currEvent.get(1).boundingBox) / 13 >= 1 &&
                     currEvent.get(0).boundingBox.topological_relation(currEvent.get(1).boundingBox) / 13 < 12;
         });
 
         Predicate intersectY = new Predicate(3, 2, (prevEvent, currEvent) -> {
+            if(currEvent.get(0).entity_class != 2 || currEvent.get(1).entity_class != 2) {
+                return false;
+            }
             return currEvent.get(0).boundingBox.topological_relation(currEvent.get(1).boundingBox) % 13 >= 1 &&
                     currEvent.get(0).boundingBox.topological_relation(currEvent.get(1).boundingBox) % 13 < 12;
         });
 
         Predicate afterX = new Predicate(4, 2, (prevEvent, currEvent) -> {
+            if(currEvent.get(0).entity_class != 2 || currEvent.get(1).entity_class != 2) {
+                return false;
+            }
             return currEvent.get(0).boundingBox.topological_relation(currEvent.get(1).boundingBox) / 13 == 12;
         });
 
         Predicate afterY = new Predicate(5, 2, (prevEvent, currEvent) -> {
+            if(currEvent.get(0).entity_class != 2 || currEvent.get(1).entity_class != 2) {
+                return false;
+            }
             return currEvent.get(0).boundingBox.topological_relation(currEvent.get(1).boundingBox) % 13 == 12;
         });
 
