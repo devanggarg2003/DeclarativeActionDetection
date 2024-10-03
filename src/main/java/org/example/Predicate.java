@@ -1,11 +1,13 @@
 package org.example;
-import java.util.Collection;
 import java.util.Vector;
 
 
 public class Predicate {
-    int predicate_id;
-    int nObjects;
+    public int predicate_id;
+    public int nStates;
+    public int nObjects;
+    public Vector<Integer> stateIds;
+    public Vector<Vector<Integer>> objectIds;
     private final ForwardFunction forwardFunction;
 
     public Predicate(int predicate_id, int nObjects, ForwardFunction forwardFunction) {

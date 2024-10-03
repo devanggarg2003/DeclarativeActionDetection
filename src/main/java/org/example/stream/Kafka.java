@@ -11,8 +11,6 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 import java.time.Duration;
 import java.util.*;
 
-
-
 public class Kafka {
 
     // a variable to store the last frame id that was processed
@@ -29,18 +27,14 @@ public class Kafka {
         // generate all the pair of events from frame history
         // and then process them
         nfa.currFrame.clear();
-        for (int i = 0; i < frame_history.size(); i++) {
-            nfa.currFrame.put(frame_history.get(i).entity_id, frame_history.get(i));
+        for (Entity value : frame_history) {
+            nfa.currFrame.put(value.entity_id, value);
         }
-        for (int i = 0; i < frame_history.size(); i++){ // Main hardcoded area
-            for (int j = 0; j < frame_history.size(); j++){
-                if (i != j) {
-                    Vector<Entity> newEvent = new Vector<>();
-                    newEvent.add(frame_history.get(i));
-                    newEvent.add(frame_history.get(j));
-                    nfa.states.getFirst().satisfyingEvents.add(newEvent);
-                }
-            }
+        System.out.println(last_frame_id + " : frame id, elements detected: " + frame_history.size());
+        for (Entity entity : frame_history) {
+            Vector<Entity> newEvent = new Vector<>();
+            newEvent.add(entity);
+            nfa.states.getFirst().satisfyingEvents.add(newEvent);
         }
         nfa.process_NFA();
     }
@@ -66,19 +60,8 @@ public class Kafka {
                     value = value.substring(1, value.length() - 1);
                     String[] values = value.split(", ");
                     int frame_id = Integer.parseInt(values[0]);
-                    int obj_id   = Integer.parseInt(values[1]);
-                    int obj_class = Integer.parseInt(values[2]);
-                    String color = values[3];
-
-                    float xmin = Float.parseFloat(values[4]);
-                    float ymin = Float.parseFloat(values[5]);
-                    float xmax = Float.parseFloat(values[6]);
-                    float ymax = Float.parseFloat(values[7]);
-
-                    // this will store the current entity
-                    BoundingBox objectBox = new BoundingBox(xmin, ymin, xmax, ymax);
-                    Entity entity = new Entity(frame_id, obj_id, obj_class, objectBox);
-
+                    Entity entity = getEntity(values, frame_id);
+                    System.out.println(frame_id + " : " + entity.entity_id);
                     if (frame_history.isEmpty()) {
                         frame_history.add(entity);
                         last_frame_id = frame_id;
@@ -99,6 +82,23 @@ public class Kafka {
             }
         }
         finally {consumer.close();}
+    }
+
+    private static Entity getEntity(String[] values, int frame_id) {
+        int obj_id   = Integer.parseInt(values[1]);
+        int obj_class = Integer.parseInt(values[2]);
+//        String color = values[3];
+
+        float xMin = Float.parseFloat(values[4]);
+        float yMin = Float.parseFloat(values[5]);
+        float xMax = Float.parseFloat(values[6]);
+        float yMax = Float.parseFloat(values[7]);
+
+        // this will store the current entity
+        BoundingBox objectBox = new BoundingBox(xMin, yMin, xMax, yMax);
+        Entity entity;
+        entity = new Entity(frame_id, obj_id, obj_class, objectBox);
+        return entity;
     }
 }
 
