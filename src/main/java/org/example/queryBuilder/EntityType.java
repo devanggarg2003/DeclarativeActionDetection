@@ -1,6 +1,6 @@
 package org.example.queryBuilder;
 
-public enum Entity {
+public enum EntityType {
     PERSON(0),
     BICYCLE(1),
     CAR(2),
@@ -80,11 +80,11 @@ public enum Entity {
     SCISSORS(76),
     TEDDY_BEAR(77),
     HAIR_DRYER(78),
-    TOOTHBRUSH(79);
-
+    TOOTHBRUSH(79),
+    ANY(100);
     private final int value;
 
-    Entity(int value) {
+    EntityType(int value) {
         this.value = value;
     }
 
@@ -92,8 +92,9 @@ public enum Entity {
         return value;
     }
 
-    public static Entity fromValue(int value) {
-        for (Entity type : Entity.values()) {
+
+    public static EntityType fromValue(int value) {
+        for (EntityType type : EntityType.values()) {
             if (type.getValue() == value) {
                 return type;
             }

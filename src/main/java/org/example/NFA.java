@@ -10,24 +10,22 @@ import java.util.HashSet;
 public class NFA {
     public Map<Integer, Entity> currFrame; // Integer :- Entity_id
     public Vector<State> states;
-//    public Vector<Predicate> predicates;
-//    public Map<Integer, Vector<Integer>> statePredicates;
-
     public NFA(){
         currFrame = new HashMap<>();
-//        statePredicates = new HashMap<>();
         states = new Vector<>();
-//        predicates = new Vector<>();
-        State startState = new State(0, true, false, 1);
-        states.add(startState);
+        State startState = new State( this,true, false, 1);
+    }
+
+    public  void addState(State state){
+        state.state_id = states.size();
+        states.add(state);
+//        return states.size() - 1;
     }
 
     private void helper_1(Integer index, Predicate predicate, Vector<Entity> prevEvent, Vector<Entity> currEvent, Set<Vector<Entity>> satisfyingEntities){
-//        System.out.println("reached first\n");
         if (index == predicate.nStates){
-//            System.out.println("reached here\n");
             if (predicate.forward(prevEvent, currEvent)){
-                satisfyingEntities.add(currEvent);
+                satisfyingEntities.add(new Vector<>(currEvent));
             }
             return;
         }
@@ -57,14 +55,13 @@ public class NFA {
     }
 
     public void process_NFA(){
-        System.out.println("reached NFA\n");
         // for all states, create a map containing the corresponding set of new events that occurred in the current frame
         Map<Integer, Set<Vector<Entity>>> nextEvents = new HashMap<>();
         for (int i = 1; i < states.size(); i++) {
             State currState = states.get(i);
             Set<Vector<Entity>> satisfyingEntities = new HashSet<>();
             for (int j = 0; j < currState.predicates.size(); j++) {
-                System.out.println("predicate:" + j);
+                System.out.println("predicate no " + j);
                 Predicate currPredicate = currState.predicates.get(j);
                 Vector<Entity> prevEvent = new Vector<>();
                 Vector<Entity> currEvent = new Vector<>();
@@ -72,18 +69,14 @@ public class NFA {
             }
             nextEvents.put(i, satisfyingEntities);
         }
-
         for (int i = 1; i < states.size(); i++){
-            // add the new events from the set for the corresponding state
             states.get(i).satisfyingEvents.clear();
-            System.out.println("state :" + i + "<----> Satisfying Events: " + nextEvents.get(i).size());
+            System.out.println(i + " " + nextEvents.get(i).size());
             for(Vector<Entity> event: nextEvents.get(i)) {
+//                System.out.println("event size:" + event.size());
                 states.get(i).satisfyingEvents.add(event);
-//                if (states.get(i).isAcceptingState) {
-//                    System.out.println(event.firstElement().entity_class + " <--> " + event.lastElement().entity_class);
-//                }
             }
-            System.out.println("-------\n");
         }
+//        System.out.println("NFA processed2");
     }
 }
